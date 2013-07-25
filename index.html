@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DroneWatch</title>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
 <link href="//cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" rel="stylesheet">
@@ -18,7 +19,8 @@
   <div class="navbar-inner">
     <div class="container-fluid">
       <a class="brand" href="#">DroneWatch</a>
-      <p class="navbar-text">Record a drone sighting by tweeting <a href="https://twitter.com/intent/tweet?screen_name=DroneWatchUK">@DroneWatchUK</a> with your location (<a target="_blank" href="https://support.twitter.com/articles/122236">instructions</a>)</p>
+      <span class="navbar-text">Tweet your location <a href="https://twitter.com/intent/tweet?screen_name=DroneWatchUK">@DroneWatchUK</a> to register a drone sighting (e.g. Carnaby Street, London)</span>
+      <span class="navbar-text pull-right"><span id="sightings">0</span> sightings</span>
     </div>
   </div>
 </div>
@@ -33,12 +35,13 @@
 </script>
 <script src="https://cdn.firebase.com/v0/firebase.js"></script>
 <script>
-  var myRootRef = new Firebase('https://dronewatch.firebaseio.com/');
-  myRootRef.on('child_added', function(data) {
+  var ref = new Firebase('https://dronewatch.firebaseio.com/');
+  ref.on('child_changed', ref.on('child_added', function(data) {
     if (data.val().geoLocation) {
       L.marker([data.val().geoLocation.latitude, data.val().geoLocation.longitude]).addTo(map);
+      $('#sightings').text(parseInt($('#sightings').text()) + 1);
     }
-  });
+  }));
 </script>
 <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>
