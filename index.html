@@ -37,8 +37,8 @@
 <script>
   var myRootRef = new Firebase('https://dronewatch.firebaseio.com/');
   myRootRef.on('child_added', function(data) {
-    if (data.val().coordinates) {
-      L.marker(data.val().coordinates.coordinates.reverse()).addTo(map);
+    if (data.val().geoLocation) {
+      L.marker([data.val().geoLocation.latitude, data.val().geoLocation.longitude]).addTo(map);
     }
   });
 </script>
