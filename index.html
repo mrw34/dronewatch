@@ -33,12 +33,14 @@
     attribution: 'Map data © OpenStreetMap contributors'
   }).addTo(map);
 </script>
-<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+<script src="//cdn.firebase.com/v0/firebase.js"></script>
 <script>
   var ref = new Firebase('https://dronewatch.firebaseio.com/');
   ref.on('child_changed', ref.on('child_added', function(data) {
-    if (data.val().geoLocation) {
-      L.marker([data.val().geoLocation.latitude, data.val().geoLocation.longitude]).addTo(map);
+    var tweet = data.val();
+    if (tweet.geoLocation) {
+      L.marker([tweet.geoLocation.latitude, tweet.geoLocation.longitude], {title: moment(tweet.createdAt).fromNow()}).addTo(map);
       $('#sightings').text(parseInt($('#sightings').text()) + 1);
     }
   }));
