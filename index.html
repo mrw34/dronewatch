@@ -37,13 +37,13 @@
 <script src="//cdn.firebase.com/v0/firebase.js"></script>
 <script>
   var ref = new Firebase('https://dronewatch.firebaseio.com/');
-  ref.on('child_changed', ref.on('child_added', function(data) {
+  ref.on('child_added', function(data) {
     var tweet = data.val();
-    if (tweet.geoLocation) {
-      L.marker([tweet.geoLocation.latitude, tweet.geoLocation.longitude], {title: moment(tweet.createdAt).fromNow()}).addTo(map);
+    if (tweet.coordinates) {
+      L.marker(tweet.coordinates.coordinates.reverse(), {title: moment(tweet.createdAt).fromNow()}).addTo(map);
       $('#sightings').text(parseInt($('#sightings').text()) + 1);
     }
-  }));
+  });
 </script>
 <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>
