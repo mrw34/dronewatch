@@ -19,7 +19,7 @@
   <div class="navbar-inner">
     <div class="container-fluid">
       <a class="brand" href="#">DroneWatch</a>
-      <span class="navbar-text">Tweet your location <a href="https://twitter.com/intent/tweet?screen_name=DroneWatchUK">@DroneWatchUK</a> to register a drone sighting e.g. "Carnaby Street, London"</span>
+      <span class="navbar-text">Spotted a drone? Tweet your location <a href="https://twitter.com/intent/tweet?screen_name=DroneWatchUK">@DroneWatchUK</a> e.g. "Carnaby Street, London"</span>
       <span class="navbar-text pull-right"><span id="sightings">0</span> sightings</span>
     </div>
   </div>
@@ -40,7 +40,7 @@
   ref.on('child_added', function(data) {
     var tweet = data.val();
     if (tweet.coordinates) {
-      L.marker(tweet.coordinates.coordinates.reverse(), {title: moment(tweet.createdAt).fromNow()}).addTo(map);
+      L.marker(tweet.coordinates.coordinates.reverse(), {title: moment(tweet.created_at).fromNow()}).addTo(map);
       $('#sightings').text(parseInt($('#sightings').text()) + 1);
     }
   });
