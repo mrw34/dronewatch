@@ -22,7 +22,7 @@
     <div class="container-fluid">
       <a class="brand" href="#">DroneWatch</a>
       <span class="navbar-text">Spotted a drone? Tweet your location <a href="https://twitter.com/intent/tweet?screen_name=DroneWatchUK">@DroneWatchUK</a> e.g. "Carnaby Street, London"</span>
-      <span class="navbar-text pull-right"><a id="download" href="#"><span id="sightings">0</span> sightings</a> <small>(<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a>)</small></span>
+      <span class="navbar-text pull-right"><a id="download" href="drones.geojson"><span id="sightings">0</span> sightings</a> <small>(<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a>)</small></span>
     </div>
   </div>
 </div>
@@ -34,7 +34,11 @@
   L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © OpenStreetMap contributors'
   }).addTo(map);
-  geoLayer = L.geoJson().addTo(map);
+  geoLayer = L.geoJson(null, {
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup(feature.label);
+    }
+  }).addTo(map);
 </script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
 <script src="//cdn.firebase.com/v0/firebase.js"></script>
@@ -43,7 +47,8 @@
   ref.on('child_added', function(data) {
     var tweet = data.val();
     if (tweet.coordinates) {
-      geoLayer.addData(tweet.coordinates);;
+      tweet.coordinates.label = '@' + tweet.user.screen_name + ', ' + moment(tweet.created_at).fromNow();
+      geoLayer.addData(tweet.coordinates);
       $('#sightings').text(parseInt($('#sightings').text()) + 1);
     }
   });
@@ -57,7 +62,7 @@
 <script src="FileSaver.min.js"></script>
 <script>
   $('#download').on('click', function() {
-    saveAs(new Blob([JSON.stringify(geoLayer.toGeoJSON())], {type: "application/json;charset=utf-8"}), "drones.geojson");
+    saveAs(new Blob([JSON.stringify(geoLayer.toGeoJSON())], {type: "application/json;charset=utf-8"}), this.pathname.substring(1));
     return false;
   });
 </script>
