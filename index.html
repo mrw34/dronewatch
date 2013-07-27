@@ -31,6 +31,7 @@
 <script src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
 <script>
   var map = L.map('map').setView([51.5072759, -0.1276597], 12);
+  map.attributionControl.addAttribution('<a href="http://www.visualpharm.com/">VisualPharm</a>');
   L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © OpenStreetMap contributors'
   }).addTo(map);
