@@ -37,7 +37,7 @@
   }).addTo(map);
   geoLayer = L.geoJson(null, {
     onEachFeature: function(feature, layer) {
-      var html = '<p>' + feature.properties.user + ', ' + moment(feature.properties.created_at).fromNow() + '</p>';
+      var html = '<p>@' + feature.properties.user + ', ' + moment(feature.properties.created_at).fromNow() + '</p>';
       if (feature.properties.media) {
         html += '<img src="' + feature.properties.media + '" style="width: 100%">';
       }
@@ -55,7 +55,7 @@
         type: 'Feature',
         geometry: tweet.coordinates,
         properties: {
-          user: '@' + tweet.user.screen_name,
+          user: tweet.user.screen_name,
           created_at: tweet.created_at,
           media: tweet.entities.media ? tweet.entities.media[0].media_url : null
         }
@@ -70,7 +70,8 @@
     $('#map').css('height', ($(window).height() - 40));
   }).resize();
 </script>
-<script src="FileSaver.min.js"></script>
+<script src="Blob.js"></script>
+<script src="FileSaver.js"></script>
 <script>
   $('#download').on('click', function(e) {
     e.preventDefault();
