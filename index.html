@@ -36,7 +36,11 @@
   }).addTo(map);
   geoLayer = L.geoJson(null, {
     onEachFeature: function(feature, layer) {
-      layer.bindPopup(feature.properties.user + ', ' + moment(feature.properties.created_at).fromNow());
+      var html = '<p>' + feature.properties.user + ', ' + moment(feature.properties.created_at).fromNow() + '</p>';
+      if (feature.properties.media) {
+        html += '<img src="' + feature.properties.media + '" style="width: 100%">';
+      }
+      layer.bindPopup(html);
     }
   }).addTo(map);
 </script>
@@ -49,7 +53,11 @@
       geoLayer.addData({
         type: 'Feature',
         geometry: tweet.coordinates,
-        properties: {user: '@' + tweet.user.screen_name, created_at: tweet.created_at},
+        properties: {
+          user: '@' + tweet.user.screen_name,
+          created_at: tweet.created_at,
+          media: tweet.entities.media ? tweet.entities.media[0].media_url : null
+        }
       });
       $('#sightings').text(parseInt($('#sightings').text()) + 1);
     }
