@@ -9,10 +9,9 @@
 <style>
   html, body, #map {
     height: 100%;
-    width: 100%;
   }
   body {
-    margin-top: 40px;
+    padding-top: 40px;
     overflow: hidden;
   }
 </style>
@@ -28,6 +27,7 @@
 </div>
 <div id="map"></div>
 
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
 <script src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
 <script>
   var map = L.map('map').setView([51.5072759, -0.1276597], 12);
@@ -36,34 +36,36 @@
   }).addTo(map);
   geoLayer = L.geoJson(null, {
     onEachFeature: function(feature, layer) {
-      layer.bindPopup(feature.label);
+      layer.bindPopup(feature.properties.user + ', ' + moment(feature.properties.created_at).fromNow());
     }
   }).addTo(map);
 </script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
 <script src="//cdn.firebase.com/v0/firebase.js"></script>
 <script>
   var ref = new Firebase('https://dronewatch.firebaseio.com/');
   ref.on('child_added', function(data) {
     var tweet = data.val();
     if (tweet.coordinates) {
-      tweet.coordinates.label = '@' + tweet.user.screen_name + ', ' + moment(tweet.created_at).fromNow();
-      geoLayer.addData(tweet.coordinates);
+      geoLayer.addData({
+        type: 'Feature',
+        geometry: tweet.coordinates,
+        properties: {user: '@' + tweet.user.screen_name, created_at: tweet.created_at},
+      });
       $('#sightings').text(parseInt($('#sightings').text()) + 1);
     }
   });
 </script>
 <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>
-  $(window).resize(function () {
+  $(window).resize(function() {
     $('#map').css('height', ($(window).height() - 40));
   }).resize();
 </script>
 <script src="FileSaver.min.js"></script>
 <script>
-  $('#download').on('click', function() {
-    saveAs(new Blob([JSON.stringify(geoLayer.toGeoJSON())], {type: "application/json;charset=utf-8"}), this.pathname.substring(1));
-    return false;
+  $('#download').on('click', function(e) {
+    e.preventDefault();
+    saveAs(new Blob([JSON.stringify(geoLayer.toGeoJSON())], {type: 'application/json;charset=utf-8'}), this.pathname.substring(1));
   });
 </script>
 <script>
